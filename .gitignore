@@ -1,3 +1,11 @@
+/node_modules
+node_modules
+
+/.env
+/frontend
+
+
+
 # Logs
 logs
 *.log
