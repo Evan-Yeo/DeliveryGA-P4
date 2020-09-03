@@ -9,12 +9,19 @@ function Navigation({ user, logout }) {
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="mr-auto">
-					<Link className="nav-link" to="/">
-						Home
-					</Link>
 					{user && (
 						<Link className="nav-link" to="/">
-							New Shipment
+							Home
+						</Link>
+					)}
+					{user && (
+						<Link className="nav-link" to="/drivers">
+							Drivers
+						</Link>
+					)}
+					{user && (
+						<Link className="nav-link" to="/new-order">
+							New Order
 						</Link>
 					)}
 				</Nav>
@@ -22,10 +29,10 @@ function Navigation({ user, logout }) {
 				<Nav>
 					{user ? (
 						<>
-							<Nav.Link href="#user">{user.username}</Nav.Link>
-							<Link to="/logout" onClick={logout} className="nav-link">
+							<Nav.Link href="#user">{user.name}</Nav.Link>
+							<a href="#" onClick={logout} className="nav-link">
 								Logout
-							</Link>
+							</a>
 						</>
 					) : (
 						<>

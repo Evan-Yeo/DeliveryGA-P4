@@ -1,11 +1,10 @@
-
 const isBlank = (obj) => {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
 };
 
 export default class Fetch {
 
-    constructor(host, namespace = '') {
+    constructor(host, namespace = null) {
         this.host = host;
         this.namespace = namespace;
     }
@@ -26,11 +25,16 @@ export default class Fetch {
      */
     credentials = 'include';
 
+    setHeaders(headers = {}) {
+		this.headers = { ...this.headers, ...headers };
+		return this.headers;
+	}
+
     /**
      * The base request method
      */
     request(path, method = 'GET', options = {}) {
-        return fetch(`${this.host}/${this.namespace}/${path}`, {
+        return fetch(`${this.host}/${this.namespace ? this.namespace + '/' : ''}${path}`, {
             method,
             credentials: this.credentials,
             headers: {

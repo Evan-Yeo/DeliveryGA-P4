@@ -1,34 +1,43 @@
 import React, { Component } from 'react';
-import { Row, Form, Button, Container } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import AuthService from '../../services/Auth';
 
 export default class Login extends Component {
-	state = {
-		email: '',
-		password: '',
-		error: null,
-	};
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			email: '',
+			password: '',
+			error: null,
+		};
+
+		this.authService = new AuthService();
+	}
 
 	changeHandler = (e) => {
 		this.setState({ [e.target.name]: e.target.value });
 	};
 
-	loginHandler = async () => {
+	login = async () => {
 		const { email, password } = this.state;
 
 		try {
-			const response = await AuthService.authenticate(email, password);
+			await this.authService.authenticate(email, password);
 		} catch (Error) {
-			this.setState({
+			return this.setState({
 				error: Error,
 			});
-			return;
 		}
 
-		this.props.updateApplicationState({
-			isAuth: true,
-			// user: response.user,
-		});
+		console.log('isAuthenticated', this.authService.isAuthenticated);
+
+		if (this.authService.isAuthenticated) {
+			this.props.updateApplicationState({
+				isAuth: true,
+				user: this.authService.user,
+			});
+		}
 
 		//     //
 		//     localStorage.setItem("token", res.data.token);
@@ -48,11 +57,13 @@ export default class Login extends Component {
 	};
 
 	render() {
+		let { error } = this.state;
 		return (
-			<div class="container">
-				<div class="py-4 d-flex justify-content-center align-items-center w-full">
-					<div class="login-container border border-light rounded shadow-sm w-50 px-4 py-2">
-						<h3 class="mb-3">Login</h3>
+			<div className="container">
+				<div className="py-4 d-flex flex-column justify-content-center align-items-center w-full">
+					{error && <Alert className="alert-danger">{error.message}</Alert>}
+					<div className="login-container border border-light rounded shadow-sm w-50 px-4 py-2">
+						<h3 className="mb-3">Login</h3>
 						<Form>
 							<Form.Group controlId="formGroupEmail">
 								<Form.Label>Email address</Form.Label>
@@ -74,7 +85,7 @@ export default class Login extends Component {
 								/>
 							</Form.Group>
 							<Form.Group controlId="submitButton">
-								<Button variant="primary" block onClick={this.loginHandler}>
+								<Button variant="primary" block onClick={this.login}>
 									Login
 								</Button>
 							</Form.Group>
